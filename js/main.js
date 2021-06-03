@@ -330,3 +330,91 @@ function singleComic() {
    console.log('There has been a problem with your fetch operation: ' + error.message);
 })
 }
+
+
+
+
+function comicCreator() {
+    const urlQueryParameters = new URLSearchParams(window.location.search);
+     const creatorID = urlQueryParameters.get("creator-id");
+    console.log(creatorID)
+  fetch(`https://gateway.marvel.com:443/v1/public/creators/${creatorID}?&ts=${timeStamp}&apikey=${publicKey}&hash=${hash}`).then(function(response) {
+     if (response.ok) {
+    response.json().then(function(jsonParsed) {
+    const results = jsonParsed;
+    console.log(results);
+    creatorInfo = results["data"].results[0],
+          creatorFullName = creatorInfo.fullName,
+          creatorImage =
+            creatorInfo.thumbnail["path"] +
+            "." +
+            creatorInfo.thumbnail["extension"],
+          comicCreatorContainerDiv = document.getElementById(
+            "comicCreatorContainerDiv"
+          ),
+          creatorComics = creatorInfo.comics.items;
+        let output = "";
+  
+        output +=
+          '<h1 class="header-main-title single-comic__main-title">Creator</h1>' +
+          '<div class="card mb-3">' +
+          '<div class="row no-gutters">' +
+          '<div class="col-md-4">' +
+          '<img src="' +
+          creatorImage +
+          '" class="card-img" alt="' + creatorFullName + '">' +
+          "</div>" + // end col-md-4
+          '<div class="col-md-8">' +
+          '<div class="card-body">' +
+          '<h5 class="card-title">' +
+          creatorFullName +
+          "</h5>";
+  
+        output +=
+          '<p class="text-muted mb-3">' +
+          "Comics: " +
+          creatorInfo.comics["available"] +
+          " | " +
+          "Series: " +
+          creatorInfo.series["available"] +
+          " | " +
+          "Stories: " +
+          creatorInfo.stories["available"] +
+          " | " +
+          "Events: " +
+          creatorInfo.events["available"] +
+          "</p>";
+  
+        output +=
+          "</div>" + // Card Body
+          "</div>" + // col-md-8
+          "</div>" + // row
+          '<div class="card-footer text-muted text-right"> ' +
+          results["attributionText"] +
+          "</div>" +
+          "</div>"; // card
+  
+        output +=
+          '<h1 class="header-main-title single-comic__main-title">Comics</h1>' +
+          '<div class="row" id="comicColumns"></div>';
+  
+        comicCreatorContainerDiv.innerHTML = output;
+  
+        for (const i in creatorComics) {
+          if (creatorComics.hasOwnProperty(i)) {
+            const comic = creatorComics[i];
+            creatorSingleComic(comic.resourceURI);
+          }
+        }
+      });    
+  } else { 
+    comicCreatorContainerDiv.innerHTML =
+    '<h2 id="header-main-title single-comic__main-title">An error has occured, check connection or bad request.</h2>';
+  }
+  })
+  .catch(function(error) {
+   console.log('There has been a problem with your fetch operation: ' + error.message);
+  })
+  }
+  
+  
