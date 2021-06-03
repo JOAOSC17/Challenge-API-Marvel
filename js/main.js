@@ -113,3 +113,115 @@ function connection() {
   .catch(function(error) {
     console.log('There has been a problem with your fetch operation: ' + error.message);
   });
+
+
+   function comics(characterID) {
+      // var id = document.getElementById('comicid');
+      // var comicid = comic.id;
+      // var characterID = "" + comicid;
+   fetch(`https://gateway.marvel.com:443/v1/public/characters/${characterID}/comics?&ts=${timeStamp}&apikey=${publicKey}&hash=${hash}`).then(function(response) {
+    if (response.ok) {
+      response.json().then(function(jsonParsed) {
+      const results = jsonParsed;
+      console.log(results["data"]);
+       const comics = results["data"].results;
+       const comicSection = document.getElementById("comicSection");
+
+      console.log(results)
+      console.log(comics)
+
+       if (results["data"] == 0) {
+         let output = "";
+         comicSection.innerHTML = output;
+         comicSection.innerHTML = "<h2>No comics Available</h2>";
+       } else {
+       //comics available
+         let output = "";
+         let creators = "";
+
+           output +=
+           '<h2 id="comicMainTitle">Comics</h2>' + '<div class="card-columns">';
+
+           for (const i in comics) {
+            if (comics.hasOwnProperty(i)) {
+              const comic = comics[i];
+              const comicID = comic.id;
+              output +=
+                '<div class="card">' +
+                '<a href="./comic.html?comic-id=' +
+                comicID + 
+                '"><img src="' +
+                comic.thumbnail["path"] +
+                "." +
+                comic.thumbnail["extension"] +
+                '" class="card-img-top" alt="' +
+                comic.title +
+                '"></a>' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' +
+      
+                '<i class="fas fa-plus float-right" onclick="Favorite()" ></i>'+
+                comic.title +
+                "</h5>";
+  
+              if (comic.description != null) {
+                output +=
+                  '<p style="font-size: 12px;" class="card-text">' +
+                  comic.description +
+                  "</p>";
+              }
+  
+              output +=
+                '<p style="font-size: 12px;" class="card-text text-muted">Characters: ';
+  
+              for (const k in comic.characters.items) {
+                if (comic.characters.items.hasOwnProperty(k)) {
+                  const character = comic.characters.items[k];
+                  output += character.name.concat(", ");
+                }
+              }
+  
+              output += "</p>";
+              output +=
+                '<p style="font-size: 12px;" class="card-text text-muted">Creators: ';
+  
+              for (const j in comic.creators.items) {
+                if (comic.creators.items.hasOwnProperty(j)) {
+                  const creator = comic.creators.items[j];
+  
+                  output += creator.name.concat(" (" + creator.role + "), ");
+                }
+              }
+  
+              output += "</p>";
+              output +=
+                "</div>" +
+                '<div class="card-footer">' +
+                '<small style="line-height: 1;" class="text-muted">' +
+                results["attributionText"] +
+                "</small>" +
+                "</div>" +
+                "</div>";
+                singleComic(comicID);
+              }
+         }
+
+         output += "</div>";
+
+         comicSection.innerHTML = output;            
+        }
+     });
+     } else {
+       document.getElementById("characterSection").innerHTML =
+         '<h2 id="characterMainTitle">Request not received</h2>';
+       document.getElementById("comicSection").innerHTML =
+         '<h2 id="characterMainTitle">Request not received</h2>';
+     }
+   })
+   .catch(function(error) {
+     console.log('There has been a problem with your fetch operation: ' + error.message);
+   });
+
+  }
+
+}
