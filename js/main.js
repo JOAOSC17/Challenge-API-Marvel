@@ -417,4 +417,62 @@ function comicCreator() {
   })
   }
   
+
+  function creatorSingleComic(comicResourceURI) {
+    const url = new URL(comicResourceURI);
+    const comicID = url.pathname.substring(url.pathname.lastIndexOf("/") + 1);
+    const comicColumns = document.getElementById("comicColumns");
+    console.log(comicID);
+    fetch(`https://gateway.marvel.com:443/v1/public/comics/${comicID}?&ts=${timeStamp}&apikey=${publicKey}&hash=${hash}`).then(function(response) {
+     if (response.ok) {
+    response.json().then(function(jsonParsed) {
+    const results = jsonParsed;
+    console.log(results);
+    comicInfo = results["data"].results[0],
+    comicImage =
+      comicInfo.thumbnail["path"] + "." + comicInfo.thumbnail["extension"],
+    comicTitle = comicInfo.title;
   
+  let output = "";
+  
+  output =
+    '<div class="col-md-4" >' +
+    '<div class="card mb-3">' +
+    '<a href="./comic.html?comic-id=' +
+    comicInfo.id +
+    '">' +
+    '<img src="' +
+    comicImage +
+    '" class="card-img-top" alt="' +
+    comicTitle +
+    '">' +
+    "</a>" +
+    '<div class="card-body">' +
+    '<h5 class="card-title">' +
+    comicTitle +
+    "</h5>";
+  
+  if (comicInfo.description !== "" || comicInfo.description != null) {
+    output +=
+      '<p class="card-text"><small class="text-muted">' +
+      comicInfo.description +
+      "</small></p>";
+  }
+  output +=
+    '<a href="./comic.html?comic-id=' +
+    comicInfo.id +
+    '">Check it out!</a>' +
+    "</div>" +
+    "</div>" +
+    "</div>";
+  
+  comicColumns.innerHTML += output;
+      });    
+  } else { 
+    comicColumns.innerHTML == '<h2>An error has occured. </h2>';
+  }
+  })
+  .catch(function(error) {
+   console.log('There has been a problem with your fetch operation: ' + error.message);
+  })
+  }
