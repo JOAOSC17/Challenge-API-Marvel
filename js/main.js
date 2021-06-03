@@ -225,3 +225,108 @@ function connection() {
   }
 
 }
+
+
+
+
+
+function singleComic() {
+    const urlQueryParameters = new URLSearchParams(window.location.search);
+     const comicID = urlQueryParameters.get("comic-id");
+    console.log(comicID)
+  fetch(`https://gateway.marvel.com:443/v1/public/comics/${comicID}?&ts=${timeStamp}&apikey=${publicKey}&hash=${hash}`).then(function(response) {
+     if (response.ok) {
+    response.json().then(function(jsonParsed) {
+    const results = jsonParsed;
+    console.log(results);
+    const comicInfo = results["data"].results[0];
+    const  comicImage =
+        comicInfo.thumbnail["path"] + "." + comicInfo.thumbnail["extension"];
+    const comicDescription = comicInfo.description;
+    const  comicCharacters = comicInfo.characters.items;
+    const comicCreators = comicInfo.creators.items;
+    
+    let output = "";
+    
+      output +=
+        '<h1 class="header-main-title single-comic__main-title">' +
+        comicInfo.title +
+        "</h1>" +
+        '<div class="card mb-3">' +
+        '<div class="row no-gutters">' +
+        '<div class="col-md-4">' +
+        '<img src="' +
+        comicImage +
+        '" class="card-img" alt="...">' +
+        "</div>" +
+        '<div class="col-md-8">' +
+        '<div class="card-body">' +
+        '<h5 class="card-title">' +
+        comicInfo.title +
+        "</h5>";
+
+      if (comicDescription !== null && comicDescription !== "") {
+        output += '<p class="card-text">' + comicDescription + "</p>";
+      }
+
+      output +=
+        '<p class="card-text">' +
+        '<small class="text-muted">' +
+        " Characters: ";
+      for (const i in comicCharacters) {
+        if (comicCharacters.hasOwnProperty(i)) {
+          const character = comicCharacters[i];
+          output +=
+            '<a href="./index.html?name=' +
+            character.name +
+            '">' +
+            character.name +
+            "</a>, ";
+        }
+      }
+
+      output +=
+        "</small>" +
+        "</p>" +
+        '<p class="card-text">' +
+        '<small class="text-muted">' +
+        "Creators: ";
+      for (const i in comicCreators) {
+        if (comicCreators.hasOwnProperty(i)) {
+          const creator = comicCreators[i];
+          var url = new URL(creator.resourceURI),
+            creatorID = url.pathname.substring(
+              url.pathname.lastIndexOf("/") + 1
+            );
+          output +=
+            '<a href="./creator.html?creator-id=' +
+            creatorID +
+            '">' +
+            creator.name.concat(" (" + creator.role + "), ") +
+            "</a>, ";
+        }
+      }
+
+      output +=
+        "</small>" +
+        "</p>" +
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        '<div class="card-footer text-muted text-right"> ' +
+        results["attributionText"] +
+        "</div>" +
+        "</div>";
+
+      singleComicContainerDiv.innerHTML = output;
+
+    })
+  } else {
+    singleComicContainerDiv.innerHTML =
+    '<h2 id="characterMainTitle">Request not received</h2>';
+  }
+})
+ .catch(function(error) {
+   console.log('There has been a problem with your fetch operation: ' + error.message);
+})
+}
