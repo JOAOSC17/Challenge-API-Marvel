@@ -64,7 +64,7 @@ function connection() {
       '<div id="characterImage">' +
       '<img class="card-img-right flex-auto d-md-block img-fluid"' +
       ' alt="Picture of ' +
-      characterAttributes.name +
+      characterAttributes.name + 
       '" src="' +
       characterAttributes.thumbnail["path"] +
       "." +
@@ -157,12 +157,10 @@ function connection() {
                 '" class="card-img-top" alt="' +
                 comic.title +
                 '"></a>' +
-                '<div class="card-body">' +
-                '<h5 class="card-title">' +
-      
-                '<i class="fas fa-plus float-right" onclick="Favorite()" ></i>'+
+                '<div class="card-body">'+
+                '<h5 class="card-title">'       +
                 comic.title +
-                "</h5>";
+                "</h5>" ;
   
               if (comic.description != null) {
                 output +=
@@ -230,6 +228,7 @@ function connection() {
 
 
 
+
 function singleComic() {
     const urlQueryParameters = new URLSearchParams(window.location.search);
      const comicID = urlQueryParameters.get("comic-id");
@@ -251,7 +250,7 @@ function singleComic() {
       output +=
         '<h1 class="header-main-title single-comic__main-title">' +
         comicInfo.title +
-        "</h1>" +
+        "</h1>"  +
         '<div class="card mb-3">' +
         '<div class="row no-gutters">' +
         '<div class="col-md-4">' +
@@ -262,9 +261,10 @@ function singleComic() {
         '<div class="col-md-8">' +
         '<div class="card-body">' +
         '<h5 class="card-title">' +
-        comicInfo.title +
+        comicInfo.title + '<i  onclick="getFav()" class="fas fa-plus float-right" id="fav"></i>' +
         "</h5>";
-
+              
+        
       if (comicDescription !== null && comicDescription !== "") {
         output += '<p class="card-text">' + comicDescription + "</p>";
       }
@@ -305,6 +305,7 @@ function singleComic() {
             creator.name.concat(" (" + creator.role + "), ") +
             "</a>, ";
         }
+
       }
 
       output +=
@@ -319,8 +320,10 @@ function singleComic() {
         "</div>";
 
       singleComicContainerDiv.innerHTML = output;
-
-    })
+           
+    }
+    
+    )
   } else {
     singleComicContainerDiv.innerHTML =
     '<h2 id="characterMainTitle">Request not received</h2>';
@@ -428,10 +431,9 @@ function comicCreator() {
     response.json().then(function(jsonParsed) {
     const results = jsonParsed;
     console.log(results);
-    comicInfo = results["data"].results[0],
-    comicImage =
-      comicInfo.thumbnail["path"] + "." + comicInfo.thumbnail["extension"],
-    comicTitle = comicInfo.title;
+    const comicInfo = results["data"].results[0];
+    const comicImage = comicInfo.thumbnail["path"] + "." + comicInfo.thumbnail["extension"];
+    const comicTitle = comicInfo.title;
   
   let output = "";
   
@@ -476,3 +478,58 @@ function comicCreator() {
    console.log('There has been a problem with your fetch operation: ' + error.message);
   })
   }
+
+/*function getFav() {
+   
+         fetch('../perfil.html').then(function(response) {
+          if (response.ok) {
+            
+         response.text().then(function(text) {
+         const results = (text);
+         console.log(results);
+         const btnFav = document.querySelector("#fav")
+        
+
+  let divFav = document.getElementById("containerFavorite");
+          console.log(divFav);
+         })  
+       } else { 
+         comicCreatorContainerDiv.innerHTML =
+         '<h2 id="header-main-title single-comic__main-title">An error has occured, check connection or bad request.</h2>';
+       }
+       })
+       .catch(function(error) {
+        console.log('There has been a problem with your fetch operation: ' + error.message);
+       })
+}*/
+
+
+// function getFav() {
+
+//   fetch("../perfil.html")
+//   .then( response => response.text())
+//   .then( response => {
+//           const parser = new DOMParser()
+//           const html = parser.parseFromString(response, "text/html")
+
+//           /* Captura todos os links com o atributo rel="bookmark" */
+//           let anchors = html.querySelector("div#containerFavorite")
+//             console.log(anchors);
+//             /* Adiciona os links capturados na div#result */
+//   })
+  
+
+// fetch("../comic.html")
+//   .then( response => response.text())
+//   .then( response => {
+//           const parser = new DOMParser()
+//           const html = parser.parseFromString(response, "text/html")
+
+//           /* Captura todos os links com o atributo rel="bookmark" */let divSingleComic = html.getElementById("singleComicContainerDiv");
+//   console.log(divSingleComic);
+          
+
+//             /* Adiciona os links capturados na div#result */
+//   })
+//    anchors+=divSingleComic
+// }
