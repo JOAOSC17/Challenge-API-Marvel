@@ -20,5 +20,5 @@ Ou pode [Clicar aqui](https://joaosc17.github.io/login.html) e usar as mesmas en
 Esse projeto foi feito em MIT license. Dê uma olhada em LICENSE para mais informações.
 
 ---
-Feito com ♥ por João Costa :wave: [Toca Aqui!✋](https://www.linkedin.com/in/joaocosta123/)
+Feito com ♥ por João Costa :wave: [Toca Aqui!](https://www.linkedin.com/in/joaocosta123/)
 
